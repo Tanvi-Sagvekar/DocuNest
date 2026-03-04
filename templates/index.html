@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+  <div class="col-md-8">
+    <h2 class="fw-semibold mb-1">Auto Document Organizer</h2>
+    <p class="text-muted mb-0">Upload once. We organize everything for you.</p>
+  </div>
+  <div class="col-md-4 text-md-end mt-3 mt-md-0">
+    <a href="{{ url_for('upload') }}" class="btn btn-primary btn-lg">
+      + Upload Document
+    </a>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card">
+      <div class="card-body">
+        <p class="text-muted text-uppercase small mb-1">Total Files</p>
+        <h3 class="fw-bold mb-0">{{ summary.total }}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card border-left-academic">
+      <div class="card-body">
+        <p class="text-muted text-uppercase small mb-1">Academic</p>
+        <h3 class="fw-bold mb-0">{{ summary.Academic }}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card border-left-finance">
+      <div class="card-body">
+        <p class="text-muted text-uppercase small mb-1">Finance</p>
+        <h3 class="fw-bold mb-0">{{ summary.Finance }}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card border-left-medical">
+      <div class="card-body">
+        <p class="text-muted text-uppercase small mb-1">Medical</p>
+        <h3 class="fw-bold mb-0">{{ summary.Medical }}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">Recent Documents</span>
+        <a href="{{ url_for('upload') }}" class="btn btn-sm btn-outline-primary">Upload New</a>
+      </div>
+      <div class="card-body">
+        {% if recent_docs %}
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Category</th>
+                <th>Uploaded</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for d in recent_docs %}
+              <tr>
+                <td>{{ d.original_filename }}</td>
+                <td>
+                  <span class="badge bg-tag-{{ d.category | lower | replace(' ', '-') | default('secondary') }}">
+                    {{ d.category }}
+                  </span>
+                </td>
+                <td class="text-muted small">{{ d.upload_date }}</td>
+                <td class="text-end">
+                  <a href="{{ url_for('result', doc_id=d.id) }}" class="btn btn-sm btn-outline-secondary">View</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">No documents yet. Upload your first file to see it here.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Quick Categories</h5>
+        <p class="text-muted small">Jump directly into a specific type of document.</p>
+        <div class="list-group small">
+          {% for cat in ['Academic', 'Finance', 'Medical', 'Personal', 'Uncategorized'] %}
+          <a href="{{ url_for('category_view', category_name=cat) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span>{{ cat }}</span>
+            <span class="badge bg-primary rounded-pill">
+              {% if cat == 'Academic' %}{{ summary.Academic }}
+              {% elif cat == 'Finance' %}{{ summary.Finance }}
+              {% elif cat == 'Medical' %}{{ summary.Medical }}
+              {% elif cat == 'Personal' %}{{ summary.Personal }}
+              {% else %}{{ summary.Uncategorized }}{% endif %}
+            </span>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Tips</h5>
+        <ul class="small text-muted mb-0">
+          <li>Use clear document titles before uploading.</li>
+          <li>For images, ensure text is readable for better OCR.</li>
+          <li>You can improve accuracy by tweaking category keywords in the backend.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

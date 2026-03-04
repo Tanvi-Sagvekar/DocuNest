@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-3">
+  <div class="col-md-8">
+    <h4 class="fw-semibold mb-1">
+      {% if search_mode %}Search results{% else %}{{ category_name }} Documents{% endif %}
+    </h4>
+    <p class="text-muted small mb-0">
+      {% if search_mode %}
+      Showing documents matching "<strong>{{ query }}</strong>".
+      {% else %}
+      All documents automatically categorized as <strong>{{ category_name }}</strong>.
+      {% endif %}
+    </p>
+  </div>
+  <div class="col-md-4 text-md-end mt-3 mt-md-0">
+    <a href="{{ url_for('upload') }}" class="btn btn-primary">
+      + Upload Document
+    </a>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    {% if docs %}
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>File</th>
+            {% if not search_mode %}<th>Category</th>{% endif %}
+            <th>Uploaded</th>
+            <th>Confidence</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for d in docs %}
+          <tr>
+            <td>{{ d.original_filename }}</td>
+            {% if not search_mode %}
+            <td>
+              <span class="badge bg-tag-{{ d.category | lower | replace(' ', '-') | default('secondary') }}">
+                {{ d.category }}
+              </span>
+            </td>
+            {% endif %}
+            <td class="text-muted small">{{ d.upload_date }}</td>
+            <td>
+              <span class="badge bg-success-subtle text-success small">{{ d.confidence }}%</span>
+            </td>
+            <td class="text-end">
+              <a href="{{ url_for('result', doc_id=d.id) }}" class="btn btn-sm btn-outline-secondary">
+                View
+              </a>
+              <a href="{{ url_for('download', doc_id=d.id) }}" class="btn btn-sm btn-outline-primary">
+                Download
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="text-muted mb-0">
+      {% if search_mode %}
+      No documents found for this search query.
+      {% else %}
+      No documents in this category yet.
+      {% endif %}
+    </p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+

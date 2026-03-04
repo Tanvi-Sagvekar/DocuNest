@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h4 class="card-title mb-3">Analyzing your document</h4>
+        <p class="text-muted small mb-4">
+          Sit back for a moment while we extract text, detect important keywords, and decide the best category.
+        </p>
+
+        <ul class="list-group mb-4">
+          <li class="list-group-item d-flex align-items-center">
+            <span class="step-badge me-3 bg-primary text-white">1</span>
+            <div>
+              <div class="fw-semibold">Uploading file</div>
+              <div class="text-muted small">Your document has been received by the server.</div>
+            </div>
+          </li>
+          <li class="list-group-item d-flex align-items-center">
+            <span class="step-badge me-3 bg-primary text-white">2</span>
+            <div>
+              <div class="fw-semibold">Extracting text</div>
+              <div class="text-muted small">We read the content from your PDF/DOCX/image.</div>
+            </div>
+          </li>
+          <li class="list-group-item d-flex align-items-center">
+            <span class="step-badge me-3 bg-primary text-white">3</span>
+            <div>
+              <div class="fw-semibold">Classifying document</div>
+              <div class="text-muted small">Using smart keyword detection to choose the best category.</div>
+            </div>
+          </li>
+        </ul>
+
+        <div class="text-center mb-3">
+          <div class="spinner-border text-primary mb-3" role="status">
+            <span class="visually-hidden">Processing...</span>
+          </div>
+          <p class="text-muted small mb-1">Almost there... preparing your result.</p>
+        </div>
+
+        <div class="text-center">
+          <a href="{{ url_for('result', doc_id=doc_id) }}" class="btn btn-primary">
+            View result now
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<meta http-equiv="refresh" content="3;url={{ url_for('result', doc_id=doc_id) }}" />
+{% endblock %}
+

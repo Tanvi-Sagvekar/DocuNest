@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm mb-3">
+      <div class="card-body p-4">
+        <h4 class="card-title mb-1">Document categorized successfully</h4>
+        <p class="text-muted small mb-4">Here’s how DocuNest understood your document.</p>
+
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <p class="text-muted small mb-1">File name</p>
+            <p class="fw-semibold mb-0">{{ doc.original_filename }}</p>
+          </div>
+          <div class="col-md-3 mb-3 mb-md-0">
+            <p class="text-muted small mb-1">Category</p>
+            <span class="badge bg-tag-{{ doc.category | lower | replace(' ', '-') | default('secondary') }} px-3 py-2">
+              {{ doc.category }}
+            </span>
+          </div>
+          <div class="col-md-3">
+            <p class="text-muted small mb-1">Confidence</p>
+            <span class="badge bg-success px-3 py-2">{{ doc.confidence }}%</span>
+          </div>
+        </div>
+
+        {% if doc.text_excerpt %}
+        <div class="mb-4">
+          <p class="text-muted small mb-1">Preview of extracted text</p>
+          <div class="excerpt-box small">
+            {{ doc.text_excerpt }}
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="d-flex flex-wrap gap-2">
+          <a href="{{ url_for('view_file', doc_id=doc.id) }}" class="btn btn-outline-primary" target="_blank">
+            View file
+          </a>
+          <a href="{{ url_for('download', doc_id=doc.id) }}" class="btn btn-outline-secondary">
+            Download
+          </a>
+          <a href="{{ url_for('category_view', category_name=doc.category) }}" class="btn btn-light">
+            View all {{ doc.category }} documents
+          </a>
+          <a href="{{ url_for('upload') }}" class="btn btn-primary ms-auto">
+            Upload another
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-body small text-muted">
+        <strong>How this was decided:</strong>
+        The system scanned your document text and looked for keywords related to
+        Academic, Finance, Medical and Personal categories. It then picked the
+        category with the strongest keyword match and calculated a confidence
+        score based on how clearly one category stood out from the others.
+      </div>
+    </div>
+
+    <div class="text-center mt-3">
+      <a href="{{ url_for('index') }}" class="text-decoration-none small text-muted">
+        ← Back to dashboard
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

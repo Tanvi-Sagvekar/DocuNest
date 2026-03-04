@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <h2 class="fw-semibold mb-3">Upload document</h2>
+    <p class="text-muted">
+      Drop a file or browse from your computer. Supported formats:
+      <strong>PDF</strong>, <strong>DOCX</strong>, <strong>JPG</strong>, <strong>PNG</strong>.
+    </p>
+
+    <div class="card shadow-sm upload-card">
+      <div class="card-body p-4">
+        <form id="uploadForm" action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+          <div id="dropArea" class="drop-zone mb-3">
+            <input
+              type="file"
+              name="file"
+              id="fileInput"
+              class="d-none"
+              accept=".pdf,.docx,.png,.jpg,.jpeg"
+            />
+            <div class="drop-zone-inner text-center">
+              <div class="upload-icon mb-2">
+                <span class="material-icon">&#8682;</span>
+              </div>
+              <p class="mb-1 fw-semibold">Drag &amp; drop your document here</p>
+              <p class="small text-muted mb-0">or</p>
+              <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="browseBtn">
+                Choose file
+              </button>
+              <div id="fileName" class="small text-muted mt-2"></div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="small text-muted">
+              Files are stored locally inside organized folders by category.
+            </div>
+            <button type="submit" class="btn btn-primary" id="uploadBtn" disabled>
+              Upload &amp; Analyze
+            </button>
+          </div>
+        </form>
+
+        <div id="processingOverlay" class="processing-overlay d-none">
+          <div class="processing-box">
+            <div class="spinner-border text-primary mb-3" role="status"></div>
+            <h6 class="fw-semibold mb-2">Analyzing document...</h6>
+            <ul class="list-unstyled small text-muted mb-0">
+              <li>• Extracting text</li>
+              <li>• Detecting keywords</li>
+              <li>• Assigning best category</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const dropArea = document.getElementById("dropArea");
+  const fileInput = document.getElementById("fileInput");
+  const browseBtn = document.getElementById("browseBtn");
+  const fileName = document.getElementById("fileName");
+  const uploadBtn = document.getElementById("uploadBtn");
+  const uploadForm = document.getElementById("uploadForm");
+  const processingOverlay = document.getElementById("processingOverlay");
+
+  function setFile(file) {
+    if (!file) return;
+    fileName.textContent = file.name;
+    uploadBtn.disabled = false;
+  }
+
+  browseBtn.addEventListener("click", () => fileInput.click());
+
+  fileInput.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    setFile(file);
+  });
+
+  ["dragenter", "dragover"].forEach((evt) => {
+    dropArea.addEventListener(evt, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropArea.classList.add("drag-over");
+    });
+  });
+
+  ["dragleave", "drop"].forEach((evt) => {
+    dropArea.addEventListener(evt, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropArea.classList.remove("drag-over");
+    });
+  });
+
+  dropArea.addEventListener("drop", (e) => {
+    const files = e.dataTransfer.files;
+    if (files && files[0]) {
+      fileInput.files = files;
+      setFile(files[0]);
+    }
+  });
+
+  uploadForm.addEventListener("submit", () => {
+    processingOverlay.classList.remove("d-none");
+  });
+</script>
+{% endblock %}
+
