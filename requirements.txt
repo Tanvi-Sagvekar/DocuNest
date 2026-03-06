@@ -4,3 +4,4 @@ PyPDF2==3.0.1
 python-docx==1.1.0
 pytesseract==0.3.10
 Pillow
+gunicorn>=21.0.0
